@@ -1,0 +1,442 @@
+:root{
+    --preto: #282b24;
+    --dourado: #d5bf82;
+    --cinza: #323232;
+    --branco: #f1f1f1;
+    --dourado_claro: #f2e1a5;
+}
+
+/*Footer*/
+.toolbar{
+    height: 80px;
+}
+
+/*Footer*/
+.tab-link{
+    display: flex;
+    justify-content: center;
+    flex-flow: column wrap;
+    
+}
+
+/*Footer*/
+.toolbar-inner .link{ 
+    background-color: var(--preto);   
+    flex:1;
+    height: 80px;  
+    line-height: 25px; 
+	font-weight:bold;
+    color:var(--branco);
+    
+    
+}
+
+/*Footer*/
+.toolbar-inner .link:not(.active){
+    color:gray;
+	font-weight:normal;
+    background-color: rgba(251, 214, 79, 0.5) !important;
+}
+
+/*Footer*/
+.toolbar-inner > .link i{
+    font-size: 28px;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dancing+Script:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Dancing+Script:wght@400..700&family=Sour+Gummy:ital,wght@0,100..900;1,100..900&display=swap');
+
+/*Top*/
+.navbar{
+    font-weight: 400;
+    font-style: normal;
+    color: var(--branco);
+    font-family: "Sour Gummy", sans-serif;
+    font-optical-sizing: auto;
+    font-variation-settings:
+        "wdth" 100;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+
+/*Top*/
+.navbar-bg{
+    background-color: var(--preto);
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: auto;
+    z-index: 0;
+    pointer-events: none; /* opcional: impede que clique no título atrapalhe os botões */
+
+}
+ 
+  /*Top*/
+.navbar .title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: auto;
+    z-index: 0;
+    pointer-events: none; /* opcional: impede que clique no título atrapalhe os botões */
+    font-family: "Sour Gummy", sans-serif;
+    color:var(--dourado);
+    font-size: 28px;
+}
+
+/*Content*/
+.color-theme-blue{
+    font-weight: 400;
+    background-color: var(--cinza);
+    color:var(--branco);
+    font-family: "Bebas Neue", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100; 
+}
+
+/*Content*/
+.block{
+    font-weight: 400;
+    background-color: var(--cinza);
+    color:var(--branco);
+    font-family: "Bebas Neue", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100;  
+}
+
+/*Content*/
+.page-content{
+    font-weight: 400;
+    background-color: var(--cinza);
+    color:var(--branco);
+    font-family: "Bebas Neue", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings:
+        "wdth" 100; 
+    padding-top: 30px;  /* Ajuste para o valor que achar necessário */
+}
+
+/*Ícones do Top*/
+.icon-only{
+    font-family: "Sour Gummy", sans-serif;
+    color:var(--dourado);
+    font-weight:bold;
+    font-size: 24px;
+}
+
+/*Ícones do Top*/
+.ri-search-line{
+    font-family: "Sour Gummy", sans-serif;
+    color:var(--dourado);
+    font-weight:bold;
+    font-size: 24px;
+}
+
+/*Ícones do Top*/
+.ri-add-line{
+    font-family: "Sour Gummy", sans-serif;
+    color:var(--dourado);
+    font-weight:bold;
+    font-size: 24px;
+}
+
+.ri-close-line{
+    font-family: "Sour Gummy", sans-serif;
+    color:var(--dourado_claro);
+    font-weight:bold;
+    font-size: 24px;
+}
+
+.button-fill{
+    background-color: var(--dourado);
+    color: #000; /* ou outro contraste que desejar */
+    font-weight: bold;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-fill:hover {
+    background-color: #e0c774; /* uma variação mais clara no hover, opcional */
+}
+
+
+/* Estilo igual para ambos os ícones (lupa e X) */
+#searchIcon {
+    font-family: "Sour Gummy", sans-serif;
+    color:var(--dourado);
+    font-weight:bold;
+    font-size: 24px;
+}
+
+.ios .ripple-wave,
+.md .ripple-wave,
+.aurora .ripple-wave {
+  background-color: rgba(251, 214, 79, 0.3) !important; 
+}
+
+.tab-link .ripple-wave {
+    display: none !important;
+}
+
+.card {
+    background-color: #2d2d2d;
+    border-radius: 4px;
+    color: var(--branco);
+    box-shadow: 0 3px 5px rgba(0,0,0,0.2);
+    transition: 0.3s ease;
+}
+
+.card:hover {
+    transform: scale(1.02);
+}
+
+.card {
+    min-height: 85px; /* Ou o valor que desejar */
+    margin: 10px 10px;
+}
+
+/* Ocultar a barra de rolagem no Webkit (Chrome, Safari) */
+.page-content::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+/* Ocultar a barra de rolagem no Firefox */
+.page-content {
+    scrollbar-width: none;  /* Para Firefox */
+    -ms-overflow-style: none;  /* Para Internet Explorer 10+ */
+}
+
+/* Se necessário, ocultar também em todo o body */
+body::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+}
+
+body {
+    scrollbar-width: none;  /* Para Firefox */
+    -ms-overflow-style: none;  /* Para Internet Explorer 10+ */
+}
+
+/* Animação para mostrar/esconder a searchbar */
+.searchbar {
+    transition: all 0.3s ease;
+    opacity: 1;
+    transform: translateX(0);
+}
+  
+.searchbar.hidden {
+    opacity: 0;
+    transform: translateX(+100%);
+    pointer-events: none;
+}
+  
+.search-box {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 16px;
+    border: 5px solid var(--dourado);
+    border-radius: 25px;
+    outline: none;
+    margin: 10px 0;
+    background-color: var(--dourado_claro) !important; /* Verde forçado */
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
+    color: #000;
+}
+  
+.search-box:focus {
+    border-color: #0051cc;
+    background-color: #ffffff;
+    box-shadow: 0 0 8px rgba(0, 81, 204, 0.3);
+
+}
+  
+  
+/* Entrada pela esquerda */
+.popup.custom-popup-anim.modal-in {
+    animation: slideFromLeft 0.4s ease-out;
+}
+  
+  /* Saída pela esquerda */
+.popup.custom-popup-anim.modal-out {
+    animation: slideToLeft 0.4s ease-in;
+}
+  
+@keyframes slideFromLeft {
+from {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+to {
+    transform: translateX(0%);
+    opacity: 1;
+}
+}
+
+@keyframes slideToLeft {
+from {
+    transform: translateX(0%);
+    opacity: 1;
+}
+to {
+    transform: translateX(-100%);
+    opacity: 0.3;
+}
+}
+
+#app-title {
+    transition: opacity 0.3s ease;
+}
+  
+#app-title.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+  
+/* Contêiner do botão flutuante */
+.fab-container {
+    position: fixed;
+    bottom: 100px;  /* Distância do fundo */
+    right: 30px;   /* Distância da direita */
+    z-index: 100;  /* Garantir que o botão fique por cima dos outros elementos */
+}
+
+/* Estilo do botão flutuante */
+.filtro-icon {
+    background-color: var(--dourado);
+    border-radius: 50%;  /* Tornar o botão redondo */
+    padding: 15px;
+    font-size: 24px;  /* Tamanho do ícone */
+    color: var(--preto);
+    border: none;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Efeito ao passar o mouse */
+.filtro-icon:hover {
+    background-color: var(--dourado_claro);  /* Cor mais clara no hover */
+}
+
+#limparFiltrosBtn {
+    margin-top: 10px;
+    background-color: transparent;
+    color: var(--dourado);
+    border: 2px solid var(--dourado);
+    font-weight: bold;
+    transition: all 0.3s ease;
+  }
+  
+  #limparFiltrosBtn:hover {
+    background-color: #f44336;
+    border: 2px solid #f44336;
+    color: white;
+  }
+  
+
+/* Estilo para os checkboxes */
+#filtrosForm input[type="checkbox"] {
+    display: none;
+  }
+  
+  #filtrosForm label {
+    position: relative;
+    padding-left: 30px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    color: #333;
+    display: inline-block;
+  }
+  
+  #filtrosForm label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--dourado);
+    border-radius: 4px;
+    background-color: #fff;
+    transition: all 0.3s ease;
+  }
+  
+  #filtrosForm input[type="checkbox"]:checked + label::before {
+    background-color: var(--dourado_claro);
+    border-color: var(--preto);
+  }
+  
+  #filtrosForm label::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 8px;
+    width: 10px;
+    height: 5px;
+    border: solid white;
+    border-width: 0 0 2px 2px;
+    transform: rotate(-45deg);
+    opacity: 0;
+    transition: all 0.2s ease;
+  }
+  
+  #filtrosForm input[type="checkbox"]:checked + label::after {
+    opacity: 0.1;
+  }
+  
+  #filtrosForm label {
+    color: var(--branco); /* Altere para a cor que preferir, como #000 ou #fff */
+    font-weight: 500;
+  }
+  
+  #filtrosForm input[type="checkbox"]:checked + label {
+    color: var(--dourado); /* Cor azul destacando o item marcado */
+  }
+
+  .input-codigo-wrap {
+    position: relative;
+    display: flex;
+  }
+  
+  #input-codigo-produto {
+    width: 100%;
+    padding-right: 40px; /* espaço pro botão não sobrepor o texto */
+  }
+  
+  #btn-scan-codigo {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    background: none;
+    border: 2px solid var(--preto); /* cor da borda */
+    border-radius: 50%; /* deixa redondinho */
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    margin: 0;
+    font-size: 20px;
+    color: var(--preto);
+    cursor: pointer;
+  }
+  
+  
