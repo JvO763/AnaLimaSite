@@ -505,9 +505,9 @@ select:focus {
 /* Tela de login centralizada */
 .login-container {
   position: fixed;
-  z-index: 9999;
+  z-index: 99999;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: white;
+  background: var(--branco);
   display: flex;
   flex-direction: column;
   justify-content: center;
