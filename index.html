@@ -24,8 +24,30 @@
 </head>
 
 <body>
+
+      <!-- Tela de login -->
+    <!-- <div id="login-screen">
+      <input type="text" id="username" placeholder="Usuário" />
+      <input type="password" id="password" placeholder="Senha" />
+      <button onclick="fazerLogin()">Entrar</button>
+      <div id="login-erro" style="color: red;"></div>
+    </div> -->
+
+    <div id="login-screen" class="login-container">
+      <h2 class="login-title">Login</h2>
+      <input id="login-username" type="text" placeholder="Usuário" class="login-input">
+      <input id="login-password" type="password" placeholder="Senha" class="login-input">
+      <button id="loginBtn" onclick="realizarLogin()">Entrar</button>
+      <p id="login-error" class="login-error"></p>
+    </div>
+
+
+
+
     <!-- App root element -->
     <div id="app">
+    <!-- <div id="app" style="display:none;"></div> -->
+      
         <!-- Popup para adicionar produto -->
         <div class="popup popup-produto custom-popup-anim" id="popup-add-produto">
           <div class="view">
@@ -480,6 +502,77 @@
         $$('#produtos').show();
       });
     </script>
+
+
+    <!-- <script>
+      function realizarLogin() {
+        var usuario = document.getElementById("login-username").value;
+        var senha = document.getElementById("login-password").value;
+
+        // Substitua pela URL do seu Apps Script
+        var url = "https://script.google.com/macros/s/AKfycbzX9ejKcPAeqVMAmW06iRc8D-JSFdQrVQLuWpgaB51wj6WBz7LkINZ7kh4PrAQjihWVjQ/exec";
+
+        fetch(url + `?action=login&usuario=${encodeURIComponent(usuario)}&senha=${encodeURIComponent(senha)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              document.getElementById("login-screen").style.display = "none";
+            } else {
+              document.getElementById("login-error").innerText = "Usuário ou senha inválidos";
+            }
+          })
+          .catch(err => {
+            console.error("Erro ao realizar login:", err);
+            document.getElementById("login-error").innerText = "Erro na conexão";
+          });
+      }
+    </script> -->
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // Verifica se o usuário já está logado na sessão atual
+        const logado = sessionStorage.getItem("usuarioLogado");
+
+        if (logado === "true") {
+          // Oculta a tela de login e mostra o conteúdo
+          document.getElementById("login-screen").style.display = "none";
+          document.getElementById("app-content").style.display = "block";
+        } else {
+          // Mostra a tela de login
+          document.getElementById("login-screen").style.display = "block";
+          document.getElementById("app-content").style.display = "none";
+        }
+      });
+
+      function realizarLogin() {
+        var usuario = document.getElementById("login-username").value;
+        var senha = document.getElementById("login-password").value;
+
+        // Substitua pela URL do seu Apps Script
+        var url = "https://script.google.com/macros/s/AKfycbzX9ejKcPAeqVMAmW06iRc8D-JSFdQrVQLuWpgaB51wj6WBz7LkINZ7kh4PrAQjihWVjQ/exec";
+
+        fetch(url + `?action=login&usuario=${encodeURIComponent(usuario)}&senha=${encodeURIComponent(senha)}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              sessionStorage.setItem("usuarioLogado", "true");
+              document.getElementById("login-screen").style.display = "none";
+              document.getElementById("app-content").style.display = "block";
+            } else {
+              document.getElementById("login-error").innerText = "Usuário ou senha inválidos";
+            }
+          })
+          .catch(err => {
+            console.error("Erro ao realizar login:", err);
+            document.getElementById("login-error").innerText = "Erro na conexão";
+          });
+      }
+    </script>
+
+
+
+
+
   
 </body>  
 
