@@ -126,58 +126,141 @@ async function carregarProdutos() {
   }
 
   async function carregarProdutos3() {
-    console.log("CARREGANDO clienteS...");
-    try {
-      $$('#preloader').show();
-  
-      const resposta = await fetch("https://script.google.com/macros/s/AKfycbwkVyvX5tmQLVb4bWW6mpy-Yq5BCfOQfX-YoT3MXrbkxcAKOd378Z82UG5ZeFLjqcpuLg/exec");
-      const dados = await resposta.json();
-  
-      console.log("Dados recebidos:", dados);
-  
-      if (dados.erro) {
-        console.error("Erro:", dados.erro);
-        return;
-      }
-  
-      const container = document.getElementById("clientes");
-      if (!container) {
-        console.warn("Container #clientes não encontrado");
-        return;
-      }
-  
-      container.innerHTML = "";
-  
-      dados.clientes.forEach(cliente => {
-        const nome = cliente["Nome".trim()] || "Sem nome";
-        const contato = cliente["Contato"] || "-";
-        const valorGasto = cliente["Valor gasto".trim()] || "-";
-        const tamanho = String(cliente["Tamanho"] || "?").toUpperCase();
-  
-        const card = `
-          <div class="card">
-            <div class="card-content card-content-padding">
-              <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
-                <div style="flex: 1; min-width: 50%;">
-                  <p><strong>${nome}</strong></p>
-                  <p>Contato: ${contato}</p>
-                  <p>Tam: ${tamanho}</p>
-                </div>
-                <div style="flex: 1; min-width: 50%; text-align: right;">
-                  <p><strong>${valorGasto}</strong></p>
-                </div>
-              </div>
-            </div>
-          </div>`;
-        container.innerHTML += card;
-      });
-  
-      $$('#preloader').hide();
-    } catch (e) {
-      console.error("Erro ao carregar clientes:", e);
-      $$('#preloader').hide();
+  console.log("CARREGANDO clientes...");
+  try {
+    $$('#preloader').show();
+
+    const resposta = await fetch("https://script.google.com/macros/s/AKfycbwkVyvX5tmQLVb4bWW6mpy-Yq5BCfOQfX-YoT3MXrbkxcAKOd378Z82UG5ZeFLjqcpuLg/exec");
+    const dados = await resposta.json();
+
+    console.log("Dados recebidos:", dados);
+
+    if (dados.erro) {
+      console.error("Erro:", dados.erro);
+      return;
     }
+
+    const container = document.getElementById("clientes");
+    if (!container) {
+      console.warn("Container #clientes não encontrado");
+      return;
+    }
+
+    container.innerHTML = "";
+
+    dados.clientes.forEach(cliente => {
+      const nome = cliente["Nome".trim()] || "Sem nome";
+      const contato = cliente["Contato"] || "-";
+      const valorGasto = cliente["Valor gasto".trim()] || "-";
+      const tamanho = String(cliente["Tamanho"] || "?").toUpperCase();
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="card-content card-content-padding">
+          <div style="position: relative;">
+            <i 
+              class="ri-pencil-line editar-cliente-btn" 
+              style="position: absolute; top: 8px; right: 8px; font-size: 18px; cursor: pointer;"
+              data-nome="${nome}"
+              data-contato="${contato}"
+              data-tamanho="${tamanho}"
+              data-valor="${valorGasto}"
+            ></i>
+          </div>
+          <div style="display: flex; justify-content: space-between; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 50%;">
+              <p class="nome-cliente"><strong>${nome}</strong></p>
+              <p class="contato-cliente">Contato: ${contato}</p>
+              <p class="tamanho-cliente">Tam: ${tamanho}</p>
+            </div>
+            <div style="flex: 1; min-width: 50%; text-align: right;">
+              <p class="valor-gasto-cliente"><strong>${valorGasto}</strong></p>
+            </div>
+          </div>
+        </div>`;
+
+
+      container.appendChild(card);
+
+      // Clique no ícone de lápis
+      card.querySelector('.editar-cliente-btn').addEventListener('click', function (e) {
+        e.stopPropagation();
+        abrirPopupEdicao(nome, contato, tamanho, valorGasto);
+      });
+
+      // Clique no card inteiro
+      card.addEventListener('click', async () => {
+        try {
+          $$('#detalhes-cliente-content').html('<p>Carregando dados...</p>');
+          app.popup.open('#popup-detalhes-cliente');
+
+          const resposta = await fetch(`https://script.google.com/macros/s/AKfycbxRIcGyoPSd5d3MiOIgJoJ4LMK7UCWh1KIyXcMmbbiWzZHXdaolseCh_u5csoirXOE0zA/exec?cliente=${encodeURIComponent(nome)}`);
+          const dados = await resposta.json();
+
+          if (dados.erro || !dados.dados || dados.dados.length === 0) {
+            $$('#detalhes-cliente-content').html('<p>Cliente sem transações.</p>');
+            return;
+          }
+
+          const linhas = dados.dados;
+          let html = '<table style="width:100%; border-collapse: collapse;">';
+          html += '<tr><th style="border-bottom: 1px solid #ccc;">Produto</th><th style="border-bottom: 1px solid #ccc;">Código</th><th style="border-bottom: 1px solid #ccc;">Valor</th></tr>';
+          let total = 0;
+
+          linhas.forEach(linha => {
+            const [produto, codigo, valor] = linha;
+            html += `<tr>
+              <td>${produto || '-'}</td>
+              <td>${codigo || '-'}</td>
+              <td>R$ ${valor || '0'}</td>
+            </tr>`;
+            total += parseFloat(valor || 0);
+          });
+
+          html += `</table><br><strong>Total gasto: R$ ${total.toFixed(2)}</strong>`;
+          $$('#detalhes-cliente-content').html(html);
+
+        } catch (erro) {
+          console.error(erro);
+          $$('#detalhes-cliente-content').html('<p style="color:red;">Erro ao buscar dados do cliente.</p>');
+        }
+      });
+
+    });
+
+    atualizarAbasClientes()
+
+
+    $$('#preloader').hide();
+  } catch (e) {
+    console.error("Erro ao carregar clientes:", e);
+    $$('#preloader').hide();
   }
+}
+
+async function atualizarAbasClientes() {
+  try {
+    const resposta = await fetch("https://script.google.com/macros/s/AKfycbznnEUWN3JabR6sTBu-AjXSISPOMQg6CWZQcgeKDU9th-IBT9BW9lRraWqdTquoVt5axA/exec", {
+      method: "POST",
+    });
+
+    console.log("Script executado com sucesso!");
+  } catch (erro) {
+    console.error("Erro ao executar o App Script:", erro);
+  }
+}
+
+function abrirPopupEdicao(nome, contato, tamanho, valorGasto) {
+  // Preencher os campos do popup com os dados recebidos
+  $$('#input-nome-produto').val(nome);
+  $$('#input-contato-produto').val(contato);
+  $$('#input-tamanho-produto').val(tamanho);
+  $$('#input-valor-gasto').val(valorGasto);
+
+  // Abre o popup
+  app.popup.open('#popup-add-registro');
+}
   
 function mostrarLoading() {
     document.getElementById('loading-screen').style.display = 'flex';
