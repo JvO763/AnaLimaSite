@@ -506,7 +506,10 @@ select:focus {
 .login-container {
   position: fixed;
   z-index: 99999;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0;
   background: var(--branco);
   display: flex;
   flex-direction: column;
