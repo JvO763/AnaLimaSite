@@ -25,14 +25,6 @@
 
 <body>
 
-      <!-- Tela de login -->
-    <!-- <div id="login-screen">
-      <input type="text" id="username" placeholder="Usuário" />
-      <input type="password" id="password" placeholder="Senha" />
-      <button onclick="fazerLogin()">Entrar</button>
-      <div id="login-erro" style="color: red;"></div>
-    </div> -->
-
     <div id="login-screen" class="login-container">
       <h2 class="login-title">Login</h2>
       <input id="login-username" type="text" placeholder="Usuário" class="login-input">
@@ -409,28 +401,83 @@
         }
       });
 
-      document.addEventListener('deviceready', function () {
+    //   document.addEventListener('deviceready', function () {
+    //   $$('#btn-scan-codigo').on('click', function () {
+    //     cordova.plugins.barcodeScanner.scan(
+    //       function (result) {
+    //         if (!result.cancelled) {
+    //           $$('#input-codigo-produto').val(result.text);
+    //         }
+    //       },
+    //       function (error) {
+    //         app.dialog.alert("Falha ao escanear o código: " + error);
+    //       },
+    //       {
+    //         preferFrontCamera: false, // usa câmera traseira
+    //         showFlipCameraButton: true,
+    //         showTorchButton: true,
+    //         prompt: "Aponte para o código de barras",
+    //         formats: "CODE_128,CODE_39,EAN_13,EAN_8,QR_CODE", // formatos aceitos
+    //         orientation: "portrait"
+    //       }
+    //     );
+    //   });
+    // });
+
+    document.addEventListener('deviceready', function () {
       $$('#btn-scan-codigo').on('click', function () {
-        cordova.plugins.barcodeScanner.scan(
-          function (result) {
-            if (!result.cancelled) {
-              $$('#input-codigo-produto').val(result.text);
+        if (cordova && cordova.plugins && cordova.plugins.barcodeScanner) {
+          // Tenta usar o plugin Cordova primeiro
+          cordova.plugins.barcodeScanner.scan(
+            function (result) {
+              if (!result.cancelled) {
+                $$('#input-codigo-produto').val(result.text);
+              }
+            },
+            function (error) {
+              app.dialog.alert("Falha ao escanear o código com Cordova: " + error + "\nTentando abrir câmera web...");
+              abrirCameraWeb();
+            },
+            {
+              preferFrontCamera: false, // câmera traseira
+              showFlipCameraButton: true,
+              showTorchButton: true,
+              prompt: "Aponte para o código de barras",
+              formats: "CODE_128,CODE_39,EAN_13,EAN_8,QR_CODE",
+              orientation: "portrait"
             }
-          },
-          function (error) {
-            app.dialog.alert("Falha ao escanear o código: " + error);
-          },
-          {
-            preferFrontCamera: false, // usa câmera traseira
-            showFlipCameraButton: true,
-            showTorchButton: true,
-            prompt: "Aponte para o código de barras",
-            formats: "CODE_128,CODE_39,EAN_13,EAN_8,QR_CODE", // formatos aceitos
-            orientation: "portrait"
-          }
-        );
+          );
+        } else {
+          // Se não está no Cordova (ex: navegador iOS)
+          abrirCameraWeb();
+        }
       });
     });
+
+    function abrirCameraWeb() {
+      // Cria input file para capturar foto da câmera traseira
+      let inputCamera = document.createElement('input');
+      inputCamera.type = 'file';
+      inputCamera.accept = 'image/*';
+      inputCamera.capture = 'environment';
+      inputCamera.style.display = 'none';
+
+      inputCamera.onchange = function (event) {
+        let arquivo = event.target.files[0];
+        if (arquivo) {
+          // Aqui você pode usar o arquivo para tentar extrair o código de barras, 
+          // ou só mostrar que a imagem foi capturada
+          // Por enquanto, só mostra o nome no input para teste
+          $$('#input-codigo-produto').val(arquivo.name || "Imagem capturada");
+          app.dialog.alert("Imagem capturada, agora você pode implementar o reconhecimento do código.");
+        }
+        document.body.removeChild(inputCamera);
+      };
+
+      document.body.appendChild(inputCamera);
+      inputCamera.click();
+    }
+
 
 
       // Abrir popup de filtros ao clicar no botão flutuante
@@ -502,31 +549,6 @@
         $$('#produtos').show();
       });
     </script>
-
-
-    <!-- <script>
-      function realizarLogin() {
-        var usuario = document.getElementById("login-username").value;
-        var senha = document.getElementById("login-password").value;
-
-        // Substitua pela URL do seu Apps Script
-        var url = "https://script.google.com/macros/s/AKfycbzX9ejKcPAeqVMAmW06iRc8D-JSFdQrVQLuWpgaB51wj6WBz7LkINZ7kh4PrAQjihWVjQ/exec";
-
-        fetch(url + `?action=login&usuario=${encodeURIComponent(usuario)}&senha=${encodeURIComponent(senha)}`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              document.getElementById("login-screen").style.display = "none";
-            } else {
-              document.getElementById("login-error").innerText = "Usuário ou senha inválidos";
-            }
-          })
-          .catch(err => {
-            console.error("Erro ao realizar login:", err);
-            document.getElementById("login-error").innerText = "Erro na conexão";
-          });
-      }
-    </script> -->
 
     <script>
       document.addEventListener('DOMContentLoaded', () => {

@@ -88,6 +88,32 @@
           </div>
         </div>
 
+        <!-- Popup de Detalhes do Cliente -->
+        <div class="popup" id="popup-detalhes-cliente">
+          <div class="view">
+            <div class="page">
+              <div class="navbar">
+                <div class="navbar-inner">
+                  <div class="title">Detalhes do Cliente</div>
+                  <div class="right">
+                    <a href="#" class="link popup-close">
+                      <i class="ri-close-line"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="page-content">
+                <div class="block">
+                  <div id="detalhes-cliente-content">
+                    <p>Carregando...</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         <!-- Your main view, should have "view-main" class -->
         <div class="view view-main">
 
@@ -133,7 +159,7 @@
                     </div>
                 
                     <!-- Título Centralizado -->
-                    <div class="title" id="app-title">Link 3</div>
+                    <div class="title" id="app-title">Clientes</div>
                     
                     <!-- Campo de Busca -->
                     <form class="searchbar searchbar-init hidden" data-search-container=".card-list" data-search-in=".card-content">
@@ -153,7 +179,9 @@
                       <a href="#" class="link icon-only" id="btnBuscar">
                         <i id="searchIcon" class="ri-search-line"></i>
                       </a>
-                    </div>        
+                    </div>       
+                    <!-- <button onclick="atualizarAbasClientes()">Atualizar abas</button> -->
+ 
                     </div>
                 </div>
   
@@ -303,119 +331,55 @@
         });
       });
 
-      // Função para buscar nomes existentes da planilha
-        async function buscarNomesClientes() {
-            try {
-                const resposta = await fetch("https://script.google.com/macros/s/AKfycbwkVyvX5tmQLVb4bWW6mpy-Yq5BCfOQfX-YoT3MXrbkxcAKOd378Z82UG5ZeFLjqcpuLg/exec");
-                const dados = await resposta.json();
-                //console.log("Dados recebidos:", dados);
-            
-                if (dados.erro) {
-                    console.error("Erro:", dados.erro);
-                    return;
-                }
-            
-                const listaDeNomes = [];
+      $$('#btn-add-cliente').on('click', async function () {
+      const nome = $$('#input-nome-produto').val().trim();
+      const contato = $$('#input-contato-produto').val().trim();
+      const valorGasto = $$('#input-valor-gasto').val().trim();
+      const tamanho = $$('#input-tamanho-produto').val().trim();
 
-                dados.clientes.forEach(cliente => {
-                    const nome = String(cliente["Nome"] || "sem nome").toLowerCase();
-                    listaDeNomes.push(nome);
-                });
+      const modo = $$('#btn-add-cliente').data('modo') || 'adicionar';
+      const nomeOriginal = $$('#btn-add-cliente').data('nomeOriginal') || nome;
 
-                // Agora você pode usar a listaDeNomes como quiser
-                //console.log("Lista de nomes:", listaDeNomes);
-                return(listaDeNomes)
-               
-                } catch (e) {
-                console.error("Erro ao carregar clientes:", e);
-               
-                }
-        }
+      if (!nome) {
+        app.dialog.alert('Por favor, preencha o nome do cliente.');
+        return;
+      }
 
-    //   $$('#btn-add-cliente').on('click', function () {
-    //     const nome = $$('#input-nome-produto').val().trim();
-    //     const contato = $$('#input-contato-produto').val().trim();
-    //     const valorGasto = $$('#input-valor-gasto').val();
-    //     const tamanho = $$('#input-tamanho-produto').val().trim();
+      const dados = {
+        nome,
+        contato,
+        valorGasto,
+        tamanho,
+        acao: modo,
+        nomeOriginal
+      };
 
-    //     if (contato) {
-    //       fetch("https://script.google.com/macros/s/AKfycbwkVyvX5tmQLVb4bWW6mpy-Yq5BCfOQfX-YoT3MXrbkxcAKOd378Z82UG5ZeFLjqcpuLg/exec", {
-    //         method: 'POST',
-    //         mode: 'no-cors',
-    //         headers: {
-    //           'Content-Type': 'application/json'
-    //         },
-    //         body: JSON.stringify({
-    //           nome,
-    //           contato,
-    //           valorGasto,
-    //           tamanho
-    //         })
-    //       });
+      await fetch("https://script.google.com/macros/s/AKfycbx7VlMLeDIhzmaiF_5LMDAu7F-Tfe6ECSqWJ5nMopd9Y_HTPXsuUluZJ48m-64MNACJcg/exec", {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dados)
+      });
 
-    //       // Fecha popup e limpa os campos
-    //       app.popup.close('#popup-add-cliente');
-    //       $$('#input-nome-produto').val('');
-    //       $$('#input-contato-produto').val('');
-    //       $$('#input-valor-gasto').val('');
-    //       $$('#input-tamanho-produto').val('');
+      // Limpar o modo para voltar ao normal
+      $$('#btn-add-cliente').removeData('modo');
+      $$('#btn-add-cliente').removeData('nomeOriginal');
 
-    //       $$('#preloader').show();
-    //       setTimeout(() => {
-    //         carregarProdutos3();
-    //       }, 10000);
-    //     } else {
-    //       app.dialog.alert('Por favor, insira pelo menos o código do produto.');
-    //     }
-    //   });
+      app.popup.close('#popup-add-cliente');
+      $$('#input-nome-produto').val('');
+      $$('#input-contato-produto').val('');
+      $$('#input-valor-gasto').val('');
+      $$('#input-tamanho-produto').val('');
 
-    $$('#btn-add-cliente').on('click', async function () {
-        const nome = $('#input-nome-produto').val().trim();
-        const nomeMinusculo = nome.toLowerCase();
+      $$('#preloader').show();
+      setTimeout(() => {
+        carregarProdutos3();
+      }, 2000);
+    });
 
-        if (!nome) {
-            app.dialog.alert('Por favor, preencha o nome do cliente.');
-            return;
-        }
 
-        const nomesExistentes = await buscarNomesClientes();
-
-        //console.log('oi', nomesExistentes)
-
-        if (nomesExistentes.includes(nomeMinusculo)) {
-            app.dialog.alert('Já existe um cliente com esse nome!');
-            return;
-        }
-
-        const contato = $('#input-contato-produto').val().trim();
-        const valorGasto = $('#input-valor-gasto').val();
-        const tamanho = $('#input-tamanho-produto').val().trim();
-
-        fetch("https://script.google.com/macros/s/AKfycbwkVyvX5tmQLVb4bWW6mpy-Yq5BCfOQfX-YoT3MXrbkxcAKOd378Z82UG5ZeFLjqcpuLg/exec", {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-            'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-            nome,
-            contato,
-            valorGasto,
-            tamanho
-            })
-        });
-
-        app.popup.close('#popup-add-cliente');
-        $('#input-nome-produto').val('');
-        $('#input-contato-produto').val('');
-        $('#input-valor-gasto').val('');
-        $('#input-tamanho-produto').val('');
-
-        $('#preloader').show();
-        setTimeout(() => {
-            carregarProdutos3();
-        }, 10000);
-        });
 
 
       // Abrir popup de filtros ao clicar no botão flutuante
@@ -460,6 +424,20 @@
         // Fecha o popup
         app.popup.close('#popup-filtros');
       });
+
+      function abrirPopupEdicao(nome, contato, tamanho, valorGasto) {
+        $$('#input-nome-produto').val(nome);
+        $$('#input-contato-produto').val(contato);
+        $$('#input-tamanho-produto').val(tamanho);
+        $$('#input-valor-gasto').val(valorGasto);
+
+        // Marcar que é edição
+        $$('#btn-add-cliente').data('modo', 'editar');
+        $$('#btn-add-cliente').data('nomeOriginal', nome);
+        $$('#btn-add-cliente').text('Salvar alterações');
+
+        app.popup.open('#popup-add-cliente');
+      }
 
     </script>
 
