@@ -129,7 +129,16 @@
                   </div>
                   <div class="block">
                     <a href="#" class="button button-fill" id="btn-add-produto">Adicionar</a>
+
                   </div>
+
+
+                  <!-- Popup da câmera -->
+                  <div id="camera-popup" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background-color:rgba(0,0,0,0.9); z-index:9999; justify-content:center; align-items:center; flex-direction:column;">
+                    <div id="camera" style="width: 100%; max-width: 500px; height: 400px; background: #000;"></div>
+                    <button id="btn-close-camera" style="margin-top: 10px; padding: 10px; font-size: 16px;">Fechar</button>
+                  </div>
+
                 </div>
               </div>
 
@@ -606,7 +615,59 @@
           Quagga.stop();
           document.body.removeChild(scannerContainer);
         });
+      } 
+
+
+      let quaggaStarted = false;
+
+      document.getElementById('btn-scan-codigo').addEventListener('click', () => {
+        const popup = document.getElementById('camera-popup');
+        popup.style.display = 'flex';
+
+        if (!quaggaStarted) {
+          Quagga.init({
+            inputStream: {
+              name: "Live",
+              type: "LiveStream",
+              target: document.querySelector('#camera'),
+              constraints: {
+                facingMode: "environment" // câmera traseira
+              }
+            },
+            decoder: {
+              readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
+            }
+          }, function (err) {
+            if (err) {
+              console.error("Erro ao iniciar Quagga:", err);
+              return;
+            }
+            Quagga.start();
+            quaggaStarted = true;
+          });
+
+          Quagga.onDetected(function (result) {
+            const code = result.codeResult.code;
+            alert("Código detectado: " + code);
+            stopCamera();
+          });
+        }
+      });
+
+      document.getElementById('btn-close-camera').addEventListener('click', () => {
+        stopCamera();
+      });
+
+      function stopCamera() {
+        const popup = document.getElementById('camera-popup');
+        popup.style.display = 'none';
+
+        if (quaggaStarted) {
+          Quagga.stop();
+          quaggaStarted = false;
+        }
       }
+
 
 
 
