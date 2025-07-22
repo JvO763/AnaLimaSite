@@ -40,7 +40,25 @@
     <div id="app">
     <!-- <div id="app" style="display:none;"></div> -->
       
+        <!-- Popup da câmera -->
+                  <div id="camera-popup" style="
+                    display:none;
+                    position:fixed;
+                    top:0;
+                    left:0;
+                    width:100vw;
+                    height:100vh;
+                    background-color:rgba(0,0,0,0.9);
+                    z-index:9999;
+                    justify-content:center;
+                    align-items:center;
+                    flex-direction:column;
+                  ">
+                    <div id="camera" style="width: 100%; max-width: 500px; height: 400px; background: #000;"></div>
+                    <button id="btn-close-camera" style="margin-top: 10px; padding: 10px; font-size: 16px;">Fechar</button>
+                  </div>
         <!-- Popup para adicionar produto -->
+
         <div class="popup popup-produto custom-popup-anim" id="popup-add-produto">
           <div class="view">
             <div class="page">
@@ -133,23 +151,7 @@
                   </div>
 
 
-                  <!-- Popup da câmera -->
-                  <div id="camera-popup" style="
-                    display:none;
-                    position:fixed;
-                    top:0;
-                    left:0;
-                    width:100vw;
-                    height:100vh;
-                    background-color:rgba(0,0,0,0.9);
-                    z-index:9999;
-                    justify-content:center;
-                    align-items:center;
-                    flex-direction:column;
-                  ">
-                    <div id="camera" style="width: 100%; max-width: 500px; height: 400px; background: #000;"></div>
-                    <button id="btn-close-camera" style="margin-top: 10px; padding: 10px; font-size: 16px;">Fechar</button>
-                  </div>
+                  
 
                 </div>
               </div>
