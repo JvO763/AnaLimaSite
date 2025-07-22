@@ -59,93 +59,102 @@
   <div id="camera-popup" style="display: none; flex;">
     <select id="camera-select"></select>
     <div id="camera"></div>
+    <button id="btn-flash" style="position: absolute; top: 10px; left: 10px; background-color: #ffd700; color: black; border: none; padding: 10px; font-size: 14px; border-radius: 5px; cursor: pointer; z-index: 10001;">🔦 Flash</button>
     <button id="btn-close-camera">Fechar</button>
   </div>
 
   <script>
     let quaggaStarted = false;
+    let track = null;
+    let imageCapture = null;
+    let torchOn = false;
 
-    // Listar câmeras disponíveis
-    function listarCameras() {
-      const select = document.getElementById('camera-select');
-      navigator.mediaDevices.enumerateDevices().then(devices => {
-        const videoDevices = devices.filter(device => device.kind === 'videoinput');
-        select.innerHTML = ''; // Limpar opções anteriores
-        videoDevices.forEach((device, index) => {
-          const option = document.createElement('option');
-          option.value = device.deviceId;
-          option.text = device.label || `Câmera ${index + 1}`;
-          select.appendChild(option);
-        });
-      }).catch(err => {
-        console.error('Erro ao listar câmeras:', err);
-      });
-    }
-
-    // Iniciar leitura
     document.getElementById('btn-scan-codigo').addEventListener('click', () => {
       const popup = document.getElementById('camera-popup');
       popup.style.display = 'flex';
-      listarCameras();
 
-      // Espera um pouco para o select popular
-      setTimeout(() => iniciarQuagga(), 500);
-    });
+      if (!quaggaStarted) {
+        Quagga.init({
+          inputStream: {
+            name: "Live",
+            type: "LiveStream",
+            target: document.querySelector('#camera'),
+            constraints: {
+              facingMode: "environment"
+            }
+          },
+          decoder: {
+            readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
+          }
+        }, async function (err) {
+          if (err) {
+            console.error("Erro ao iniciar Quagga:", err);
+            return;
+          }
+          Quagga.start();
+          quaggaStarted = true;
 
-    // Trocar câmera e reiniciar leitura
-    document.getElementById('camera-select').addEventListener('change', () => {
-      if (quaggaStarted) {
-        Quagga.stop();
-        quaggaStarted = false;
+          // Pegar a stream de vídeo e configurar o controle de flash
+          const stream = Quagga.cameraAccess.getActiveStream();
+          if (stream) {
+            track = stream.getVideoTracks()[0];
+            try {
+              imageCapture = new ImageCapture(track);
+              const capabilities = track.getCapabilities();
+              if (!capabilities.torch) {
+                document.getElementById('btn-flash').style.display = 'none';
+              }
+            } catch (e) {
+              console.warn("Torch não suportado:", e);
+              document.getElementById('btn-flash').style.display = 'none';
+            }
+          }
+        });
+
+        Quagga.onDetected(function (result) {
+          const code = result.codeResult.code;
+          alert("Código detectado: " + code);
+          stopCamera();
+        });
       }
-      iniciarQuagga();
     });
 
-    // Fechar popup
     document.getElementById('btn-close-camera').addEventListener('click', () => {
       stopCamera();
     });
 
-    function iniciarQuagga() {
-      const selectedDeviceId = document.getElementById('camera-select').value;
-
-      Quagga.init({
-        inputStream: {
-          name: "Live",
-          type: "LiveStream",
-          target: document.querySelector('#camera'),
-          constraints: {
-            deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined
-          }
-        },
-        decoder: {
-          readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader"]
+    document.getElementById('btn-flash').addEventListener('click', async () => {
+      if (track) {
+        try {
+          await track.applyConstraints({
+            advanced: [{ torch: !torchOn }]
+          });
+          torchOn = !torchOn;
+        } catch (e) {
+          console.error("Erro ao controlar o flash:", e);
         }
-      }, function (err) {
-        if (err) {
-          console.error("Erro ao iniciar Quagga:", err);
-          return;
-        }
-        Quagga.start();
-        quaggaStarted = true;
-      });
-
-      Quagga.onDetected(function (result) {
-        const code = result.codeResult.code;
-        alert("Código detectado: " + code);
-        stopCamera();
-      });
-    }
+      }
+    });
 
     function stopCamera() {
       const popup = document.getElementById('camera-popup');
       popup.style.display = 'none';
+
       if (quaggaStarted) {
         Quagga.stop();
         quaggaStarted = false;
       }
+
+      if (track) {
+        track.stop();
+        track = null;
+      }
+
+      torchOn = false;
+      document.getElementById('btn-flash').style.display = 'inline-block';
     }
-  </script>
+    </script>
+
 
 </body>
 </html>
