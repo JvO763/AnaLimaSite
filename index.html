@@ -54,7 +54,9 @@
                     align-items:center;
                     flex-direction:column;
                   ">
-                    <div id="camera" style="width: 100%; max-width: 500px; height: 400px; background: #000;"></div>
+                  <select id="camera-select" style="margin-bottom: 10px;"></select>
+
+                  <div id="camera" style="width: 100%; max-width: 500px; height: 400px; background: #000;"></div>
                     <button id="btn-close-camera" style="margin-top: 10px; padding: 10px; font-size: 16px;">Fechar</button>
                   </div>
 
@@ -455,9 +457,7 @@
 
     // Tentativa de usar a câmera web como fallback para iOS ou navegadores que não suportam Cordova
 
-    $$(document).on('click', '#btn-scan-codigo', function () {
-      iniciarScannerWeb(); // sempre usa a câmera do navegador
-    });
+
 
 
 
@@ -579,15 +579,18 @@
       document.getElementById('btn-scan-codigo').addEventListener('click', () => {
         const popup = document.getElementById('camera-popup');
         popup.style.display = 'flex';
+        listarCameras(); // <== adiciona isso aqui
 
         if (!quaggaStarted) {
+          const selectedDeviceId = document.getElementById('camera-select').value;
+
           Quagga.init({
             inputStream: {
               name: "Live",
               type: "LiveStream",
               target: document.querySelector('#camera'),
               constraints: {
-                facingMode: "environment"
+                deviceId: selectedDeviceId ? { exact: selectedDeviceId } : undefined
               }
             },
             decoder: {
@@ -610,6 +613,7 @@
         }
       });
 
+
       document.getElementById('btn-close-camera').addEventListener('click', () => {
         stopCamera();
       });
@@ -622,6 +626,22 @@
           Quagga.stop();
           quaggaStarted = false;
         }
+      }
+
+      function listarCameras() {
+        const select = document.getElementById('camera-select');
+        navigator.mediaDevices.enumerateDevices().then(devices => {
+          const videoDevices = devices.filter(device => device.kind === 'videoinput');
+          select.innerHTML = ''; // limpa opções antigas
+          videoDevices.forEach((device, index) => {
+            const option = document.createElement('option');
+            option.value = device.deviceId;
+            option.text = device.label || `Câmera ${index + 1}`;
+            select.appendChild(option);
+          });
+        }).catch(err => {
+          console.error('Erro ao listar câmeras:', err);
+        });
       }
 
 
