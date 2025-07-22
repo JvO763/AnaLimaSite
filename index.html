@@ -57,6 +57,7 @@
                     <div id="camera" style="width: 100%; max-width: 500px; height: 400px; background: #000;"></div>
                     <button id="btn-close-camera" style="margin-top: 10px; padding: 10px; font-size: 16px;">Fechar</button>
                   </div>
+
         <!-- Popup para adicionar produto -->
 
         <div class="popup popup-produto custom-popup-anim" id="popup-add-produto">
@@ -297,7 +298,7 @@
     <!-- Roteamento do app-->
     <script type="text/javascript" src="js/routes.js"></script>
     <script src="cordova.js"></script>
-    <script src="https://unpkg.com/@ericblade/quagga2@1.2.6/dist/quagga.min.js"></script>
+   <script src="https://unpkg.com/quagga@0.12.1/dist/quagga.min.js"></script>
 
 
     <script>
@@ -572,65 +573,6 @@
           });
       }
 
-      
-      function iniciarScannerWeb() {
-        const scannerContainer = document.createElement("div");
-        scannerContainer.id = "scanner-container";
-        scannerContainer.style.position = "fixed";
-        scannerContainer.style.top = 0;
-        scannerContainer.style.left = 0;
-        scannerContainer.style.width = "100%";
-        scannerContainer.style.height = "100%";
-        scannerContainer.style.background = "rgba(0, 0, 0, 0.8)";
-        scannerContainer.style.zIndex = 9999;
-        scannerContainer.innerHTML = `
-          <div style="text-align: center; margin-top: 20px;">
-            <video id="scanner-preview" style="width: 90%; max-width: 480px; border: 2px solid white;"></video>
-            <br>
-            <button id="fechar-scanner" style="margin-top: 10px; padding: 8px 16px;">Fechar</button>
-          </div>
-        `;
-        document.body.appendChild(scannerContainer);
-
-        const videoElement = document.getElementById("scanner-preview");
-
-        Quagga.init({
-          inputStream: {
-            name: "Live",
-            type: "LiveStream",
-            target: videoElement,
-            constraints: {
-              facingMode: "environment"
-            }
-          },
-          decoder: {
-            readers: ["ean_reader", "code_128_reader", "ean_8_reader", "code_39_reader"]
-          }
-        }, function (err) {
-          if (err) {
-            console.error("Erro ao iniciar o scanner:", err);
-            alert("Erro ao acessar a câmera: " + err.message);
-            document.body.removeChild(scannerContainer);
-            return;
-          }
-          Quagga.start();
-        });
-
-        Quagga.onDetected(function (result) {
-          const codigo = result.codeResult.code;
-          if (codigo) {
-            $$('#input-codigo-produto').val(codigo);
-            Quagga.stop();
-            document.body.removeChild(scannerContainer);
-          }
-        });
-
-        document.getElementById("fechar-scanner").addEventListener("click", () => {
-          Quagga.stop();
-          document.body.removeChild(scannerContainer);
-        });
-      } 
-
 
       let quaggaStarted = false;
 
@@ -645,7 +587,7 @@
               type: "LiveStream",
               target: document.querySelector('#camera'),
               constraints: {
-                facingMode: "environment" // câmera traseira
+                facingMode: "environment"
               }
             },
             decoder: {
@@ -681,8 +623,6 @@
           quaggaStarted = false;
         }
       }
-
-
 
 
     </script>
