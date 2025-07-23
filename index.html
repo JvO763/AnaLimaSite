@@ -623,7 +623,7 @@
         Quagga.onDetected(function (result) {
           const code = result.codeResult.code;
           alert("Código detectado: " + code);
-          $$('#input-codigo-produto').val(code.text);
+          $$('#input-codigo-produto').val(code);
           stopCamera();
         });
       }
