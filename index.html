@@ -612,7 +612,7 @@
             readers: ["code_128_reader", "code_39_reader","ean_13_reader", "ean_8_reader", "qr_code_reader"]
           },
           locate: true,  // <- Aqui ativa a detecção inteligente da área do código
-          numOfWorkers: navigator.hardwareConcurrency || 4 // <- Melhora desempenho no desktop
+          numOfWorkers: navigator.hardwareConcurrency || 3 // <- Melhora desempenho no desktop
         }, function (err) {
           if (err) {
             console.error("Erro ao iniciar Quagga:", err);
