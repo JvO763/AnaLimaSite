@@ -612,7 +612,7 @@
             readers: ["code_128_reader", "code_39_reader","ean_13_reader", "ean_8_reader", "qr_code_reader"]
           },
           locate: true,  // <- Aqui ativa a detecção inteligente da área do código
-          numOfWorkers: navigator.hardwareConcurrency || 3 // <- Melhora desempenho no desktop
+          numOfWorkers: navigator.hardwareConcurrency || 4 // <- Melhora desempenho no desktop
         }, function (err) {
           if (err) {
             console.error("Erro ao iniciar Quagga:", err);
@@ -632,7 +632,7 @@
           const errorSum = codes.reduce((sum, c) => sum + (c.error || 1), 0);
 
           // Quanto menor o erro total, melhor a qualidade (ajuste o limiar conforme necessário)
-          if (errorSum < 0.25 * codes.length) {
+          if (errorSum < 0.5 * codes.length) {
             const code = result.codeResult.code;
             $$('#input-codigo-produto').val(code);
             stopCamera();
