@@ -622,28 +622,14 @@
           quaggaStarted = true;
         });
 
-      //   Quagga.onDetected(function (result) {
-      //     const code = result.codeResult.code;
-          
-      //     $$('#input-codigo-produto').val(code);
-      //     stopCamera();
-      //     $$('#input-codigo-produto').val(code);
-      //   });
-      // }
-      let detectionInProgress = false;
-
-      Quagga.onDetected(function (result) {
-        if (detectionInProgress) return; // Ignora se já está processando uma detecção
-        detectionInProgress = true;
-
-        // Aguarda 1 segundo para garantir melhor foco e estabilidade
-        setTimeout(() => {
+        Quagga.onDetected(function (result) {
           const code = result.codeResult.code;
+          
           $$('#input-codigo-produto').val(code);
           stopCamera();
-          detectionInProgress = false;
-        }, 1000);
-      });
+          $$('#input-codigo-produto').val(code);
+        });
+      }
 
       function stopCamera() {
         const popup = document.getElementById('camera-popup');
