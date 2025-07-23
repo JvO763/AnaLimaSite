@@ -610,7 +610,9 @@
           },
           decoder: {
             readers: ["code_128_reader", "code_39_reader","ean_13_reader", "ean_8_reader", "qr_code_reader"]
-          }
+          },
+          locate: true,  // <- Aqui ativa a detecção inteligente da área do código
+          numOfWorkers: navigator.hardwareConcurrency || 4 // <- Melhora desempenho no desktop
         }, function (err) {
           if (err) {
             console.error("Erro ao iniciar Quagga:", err);
@@ -622,10 +624,22 @@
 
         Quagga.onDetected(function (result) {
           const code = result.codeResult.code;
-          //alert("Código detectado: " + code);
-          $$('#input-codigo-produto').val(code);
-          stopCamera();
-          $$('#input-codigo-produto').val(code);
+          
+          // $$('#input-codigo-produto').val(code);
+          // stopCamera();
+          // $$('#input-codigo-produto').val(code);
+          const codes = result.codeResult.decodedCodes;
+          const errorSum = codes.reduce((sum, c) => sum + (c.error || 1), 0);
+
+          // Quanto menor o erro total, melhor a qualidade (ajuste o limiar conforme necessário)
+          if (errorSum < 0.25 * codes.length) {
+            const code = result.codeResult.code;
+            $$('#input-codigo-produto').val(code);
+            stopCamera();
+            $$('#input-codigo-produto').val(code);
+          } else {
+            console.log('Leitura ignorada por baixa qualidade');
+          }
         });
       }
 
