@@ -632,7 +632,7 @@
           const errorSum = codes.reduce((sum, c) => sum + (c.error || 1), 0);
 
           // Quanto menor o erro total, melhor a qualidade (ajuste o limiar conforme necessário)
-          if (errorSum < 0.5 * codes.length) {
+          if (errorSum < 1 * codes.length) {
             const code = result.codeResult.code;
             $$('#input-codigo-produto').val(code);
             stopCamera();
