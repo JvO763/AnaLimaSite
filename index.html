@@ -622,26 +622,28 @@
           quaggaStarted = true;
         });
 
-        Quagga.onDetected(function (result) {
-          const code = result.codeResult.code;
+      //   Quagga.onDetected(function (result) {
+      //     const code = result.codeResult.code;
           
-          // $$('#input-codigo-produto').val(code);
-          // stopCamera();
-          // $$('#input-codigo-produto').val(code);
-          const codes = result.codeResult.decodedCodes;
-          const errorSum = codes.reduce((sum, c) => sum + (c.error || 1), 0);
+      //     $$('#input-codigo-produto').val(code);
+      //     stopCamera();
+      //     $$('#input-codigo-produto').val(code);
+      //   });
+      // }
+      let detectionInProgress = false;
 
-          // Quanto menor o erro total, melhor a qualidade (ajuste o limiar conforme necessário)
-          if (errorSum < 1 * codes.length) {
-            const code = result.codeResult.code;
-            $$('#input-codigo-produto').val(code);
-            stopCamera();
-            $$('#input-codigo-produto').val(code);
-          } else {
-            console.log('Leitura ignorada por baixa qualidade');
-          }
-        });
-      }
+      Quagga.onDetected(function (result) {
+        if (detectionInProgress) return; // Ignora se já está processando uma detecção
+        detectionInProgress = true;
+
+        // Aguarda 1 segundo para garantir melhor foco e estabilidade
+        setTimeout(() => {
+          const code = result.codeResult.code;
+          $$('#input-codigo-produto').val(code);
+          stopCamera();
+          detectionInProgress = false;
+        }, 1000);
+      });
 
       function stopCamera() {
         const popup = document.getElementById('camera-popup');
