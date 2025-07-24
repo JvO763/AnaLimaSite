@@ -136,10 +136,6 @@
                     <a href="#" class="button button-fill" id="btn-add-produto">Adicionar</a>
 
                   </div>
-
-
-                  
-
                 </div>
               </div>
 
@@ -417,8 +413,7 @@
         }
       });
 
-      //Tava funcionando a camera só android, mas tentei criar uma camera pra iOS tbm, testar
-
+      //Iniciar leitura camera Android
     //   document.addEventListener('deviceready', function () {
     //   $$('#btn-scan-codigo').on('click', function () {
     //     cordova.plugins.barcodeScanner.scan(
@@ -442,6 +437,16 @@
     //   });
     // });
 
+      // Iniciar leitura camera web
+
+      document.getElementById('btn-scan-codigo').addEventListener('click', () => {
+        const popup = document.getElementById('camera-popup');
+        popup.style.display = 'flex';
+        listarCameras();
+
+        // Espera um pouco para o select popular
+        setTimeout(() => iniciarQuagga(), 500);
+      });
 
       // Abrir popup de filtros ao clicar no botão flutuante
       $$('#filterButton').on('click', function () {
@@ -572,15 +577,7 @@
         });
       }
 
-      // Iniciar leitura
-      document.getElementById('btn-scan-codigo').addEventListener('click', () => {
-        const popup = document.getElementById('camera-popup');
-        popup.style.display = 'flex';
-        listarCameras();
-
-        // Espera um pouco para o select popular
-        setTimeout(() => iniciarQuagga(), 500);
-      });
+      
 
       // Trocar câmera e reiniciar leitura
       document.getElementById('camera-select').addEventListener('change', () => {
@@ -609,7 +606,7 @@
             }
           },
           decoder: {
-            readers: ["code_128_reader", "code_39_reader", "ean_8_reader", "ean_reader"]
+            readers: ["code_128_reader", "code_39_reader","ean_13_reader", "ean_8_reader", "qr_code_reader"]
           }
         }, function (err) {
           if (err) {
@@ -623,6 +620,7 @@
         Quagga.onDetected(function (result) {
           const code = result.codeResult.code;
           //alert("Código detectado: " + code);
+          $$('#input-codigo-produto').val(code);
           stopCamera();
           $$('#input-codigo-produto').val(code);
         });
