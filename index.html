@@ -375,7 +375,7 @@
         const qtdAtual = parseInt($$('#input-qtd-atual-produto').val().trim()) || 1;
 
         if (codigo) {
-          fetch("https://script.google.com/macros/s/AKfycbyXDWkX4mXl8-3gCIQ3hfgtjEQw6idQmSJmCqv_9W8F3_ebLHkVTy8yFAAti9jFCuhUBg/exec", {
+          fetch("https://script.google.com/macros/s/AKfycby59XAFxMwl5nqrBwx3hn5P8IDBaxM1Q8r7RiX6t0DTG8uNnh_14WhHr9EmlLQf4Q6poA/exec", {
             method: 'POST',
             mode: 'no-cors', // evita CORS no app Cordova
             headers: {
@@ -606,7 +606,7 @@
             }
           },
           decoder: {
-            readers: ["code_128_reader", "code_39_reader","ean_8_reader", "ean_reader"]
+            readers: ["code_128_reader", "code_39_reader","ean_13_reader", "ean_8_reader", "qr_code_reader"]
           }
         }, function (err) {
           if (err) {
